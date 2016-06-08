@@ -55,6 +55,13 @@ public class ContextMenuCreator {
 
     }
 
+    /**
+     * Get the menu datas from xml.
+     *
+     * @param id the menu resource.
+     * @return
+     */
+    @MenuRes
     private List<MenuModel> createMenusFromResource(int id) {
         List<MenuModel> menuModels = new ArrayList<>();
         XmlResourceParser xml = context.getResources().getXml(id);
@@ -83,4 +90,5 @@ public class ContextMenuCreator {
         }
         return menuModels;
     }
+
 }

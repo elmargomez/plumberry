@@ -16,12 +16,12 @@
 
 package com.elmargomez.plumberry;
 
-import android.content.Context;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class PlumBerry {
+public class MenuViewHolder {
 
-    public static ContextMenuCreator build(Context context) {
-        return new ContextMenuCreator(context);
-    }
+    public TextView textView;
+    public ImageView icon;
 
 }
