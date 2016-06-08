@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/plumberry.iml" filepath="$PROJECT_DIR$/plumberry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plumberry/plumberry-plumberry.iml" filepath="$PROJECT_DIR$/plumberry/plumberry-plumberry.iml" />
+    </modules>
+  </component>
+</project>
