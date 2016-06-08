@@ -25,6 +25,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContextMenuCreator {
 
@@ -41,13 +43,20 @@ public class ContextMenuCreator {
 
     @MenuRes
     public ContextMenuCreator menu(int id) {
+        List<MenuModel> menuModels = new ArrayList<>();
         XmlResourceParser xml = context.getResources().getXml(id);
         try {
             int event = xml.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
                 if (event == XmlPullParser.START_DOCUMENT) {
                     if (xml.getName().equals(ITEM)) {
-
+                        MenuModel menuModel = new MenuModel();
+                        menuModel.setTitle(xml.getAttributeValue(null, TITLE));
+                        String iconID = xml.getAttributeValue(null, ICON);
+                        if (iconID != null) {
+                            menuModel.setIcon(Integer.parseInt(iconID));
+                        }
+                        menuModels.add(menuModel);
                     }
                 }
                 event = xml.next();
