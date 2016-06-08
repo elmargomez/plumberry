@@ -43,6 +43,19 @@ public class ContextMenuCreator {
 
     @MenuRes
     public ContextMenuCreator menu(int id) {
+        List<MenuModel> menuModels = SingletonCache.getInstance().getMenus(id);
+        if (menuModels == null) {
+            menuModels = createMenusFromResource(id);
+            SingletonCache.getInstance().add(id, menuModels);
+        }
+        return this;
+    }
+
+    public void anchor(View v) {
+
+    }
+
+    private List<MenuModel> createMenusFromResource(int id) {
         List<MenuModel> menuModels = new ArrayList<>();
         XmlResourceParser xml = context.getResources().getXml(id);
         try {
@@ -68,10 +81,6 @@ public class ContextMenuCreator {
         } finally {
             xml.close();
         }
-        return this;
-    }
-
-    public void anchor(View v) {
-
+        return menuModels;
     }
 }
