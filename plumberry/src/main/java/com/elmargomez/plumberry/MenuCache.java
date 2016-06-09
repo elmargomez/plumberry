@@ -16,21 +16,15 @@
 
 package com.elmargomez.plumberry;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class MenuCache implements Cache {
+/**
+ * Created by deadlydragon00 on 6/8/16.
+ */
+public interface MenuCache {
 
-    private Map<Integer, List<MenuModel>> cacheHolder = new HashMap<>();
+    public void add(int id, List<MenuModel> menuModels);
 
-    @Override
-    public void add(int id, List<MenuModel> menuModels) {
-        cacheHolder.put(id, menuModels);
-    }
+    public List<MenuModel> get(int id);
 
-    @Override
-    public List<MenuModel> get(int id) {
-        return cacheHolder.get(id);
-    }
 }

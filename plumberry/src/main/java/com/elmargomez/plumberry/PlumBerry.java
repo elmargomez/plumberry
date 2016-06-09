@@ -17,11 +17,25 @@
 package com.elmargomez.plumberry;
 
 import android.content.Context;
+import android.support.annotation.MenuRes;
 
 public class PlumBerry {
 
-    public static ContextMenuCreator build(Context context) {
-        return new ContextMenuCreator(context);
+    private static PlumBerry pbInstance;
+    private Context context;
+
+    private PlumBerry(Context context) {
+        this.context = context;
     }
 
+    public static synchronized PlumBerry build(Context context) {
+        if (pbInstance == null) {
+            pbInstance = new PlumBerry(context);
+        }
+        return pbInstance;
+    }
+
+    public ContextMenuCreator menu(@MenuRes int id) {
+        return new ContextMenuCreator(context, id);
+    }
 }

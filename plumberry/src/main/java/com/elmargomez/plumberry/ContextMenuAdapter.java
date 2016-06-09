@@ -54,7 +54,7 @@ public class ContextMenuAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         MenuViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_layout, parent);
+            convertView = inflater.inflate(R.layout.item_layout, parent, false);
             holder = new MenuViewHolder();
             holder.textView = (TextView) convertView.findViewById(R.id.menu_name);
             convertView.setTag(holder);
