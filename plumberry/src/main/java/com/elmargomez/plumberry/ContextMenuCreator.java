@@ -37,8 +37,10 @@ public class ContextMenuCreator {
     //attributes
     private static final String TITLE = "title";
     private static final String ICON = "icon";
+    public static final int DEFAULT_WIDTH = 160;
 
     private Context context;
+    private Integer width, height;
     private ContextMenuAdapter contextMenuAdapter;
 
     public ContextMenuCreator(Context context, int id) {
@@ -52,6 +54,14 @@ public class ContextMenuCreator {
         this.contextMenuAdapter = new ContextMenuAdapter(context, menuModels);
     }
 
+    public void width(int pixel) {
+        width = pixel;
+    }
+
+    public void height(int pixel) {
+        height = pixel;
+    }
+
     /**
      * Sets the coordinate of the mini Dialog.
      *
@@ -60,7 +70,12 @@ public class ContextMenuCreator {
     public void anchor(View v) {
         ListPopupWindow popupWindow = new ListPopupWindow(context);
         popupWindow.setAdapter(contextMenuAdapter);
-        popupWindow.setWidth(400);
+        popupWindow.setWidth(width == null ? DEFAULT_WIDTH : width);
+
+        if (height != null) {
+            popupWindow.setHeight(height);
+        }
+
         popupWindow.setAnchorView(v);
         popupWindow.show();
     }
