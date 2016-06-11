@@ -18,6 +18,9 @@ package com.elmargomez.plumberry;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -42,12 +45,18 @@ public class ContextMenuCreator {
     private PopupWindow window;
     private Integer width, height;
     private ContextMenuAdapter contextMenuAdapter;
+    private View view;
     private ListView listView;
 
     public ContextMenuCreator(Context context) {
         this.context = context;
         this.window = new PopupWindow(context);
-        this.listView = new ListView(context);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        view = inflater.inflate(R.layout.popup_dialog, null);
+        listView = (ListView) view.findViewById(R.id.popup_menu_holder);
+
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     /**
@@ -64,7 +73,8 @@ public class ContextMenuCreator {
         this.contextMenuAdapter = new ContextMenuAdapter(context, menuModels);
 
         listView.setAdapter(contextMenuAdapter);
-        window.setContentView(listView);
+        window.setContentView(view);
+
     }
 
     /**
