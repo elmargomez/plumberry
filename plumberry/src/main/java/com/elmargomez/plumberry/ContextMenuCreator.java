@@ -50,6 +50,11 @@ public class ContextMenuCreator {
         this.listView = new ListView(context);
     }
 
+    /**
+     * Inflate the menu.
+     *
+     * @param id the resource ID of the menu.
+     */
     public void menu(int id) {
         List<MenuModel> menuModels = SingletonCache.getInstance().getMenus(id);
         if (menuModels == null) {
@@ -62,10 +67,22 @@ public class ContextMenuCreator {
         window.setContentView(listView);
     }
 
+    /**
+     * Set the width of the dialog.
+     *
+     * @param pixel
+     * @see #height
+     */
     public void width(int pixel) {
         width = pixel;
     }
 
+    /**
+     * Set the height of the dialog.
+     *
+     * @param pixel
+     * @see #width
+     */
     public void height(int pixel) {
         height = pixel;
     }
@@ -73,14 +90,13 @@ public class ContextMenuCreator {
     /**
      * Sets the coordinate of the mini Dialog.
      *
-     * @param v the taget view.
+     * @param v the target view.
      */
     public void anchor(View v) {
-        window.dismiss();
         window.setWidth(DEFAULT_WIDTH);
         window.setHeight(DEFAULT_WIDTH);
+        window.setOutsideTouchable(true);
         window.showAsDropDown(v);
-        window.update();
     }
 
     /**
