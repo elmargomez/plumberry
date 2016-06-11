@@ -23,9 +23,11 @@ public class PlumBerry {
 
     private static PlumBerry pbInstance;
     private Context context;
+    private ContextMenuCreator contextMenuCreator;
 
     private PlumBerry(Context context) {
         this.context = context;
+        this.contextMenuCreator = new ContextMenuCreator(context);
     }
 
     public static synchronized PlumBerry build(Context context) {
@@ -36,6 +38,7 @@ public class PlumBerry {
     }
 
     public ContextMenuCreator menu(@MenuRes int id) {
-        return new ContextMenuCreator(context, id);
+        contextMenuCreator.menu(id);
+        return contextMenuCreator;
     }
 }

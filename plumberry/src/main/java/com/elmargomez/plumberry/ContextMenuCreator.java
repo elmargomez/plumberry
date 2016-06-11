@@ -17,11 +17,10 @@
 package com.elmargomez.plumberry;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.support.annotation.MenuRes;
 import android.view.View;
-import android.widget.ListPopupWindow;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -40,18 +39,27 @@ public class ContextMenuCreator {
     public static final int DEFAULT_WIDTH = 160;
 
     private Context context;
+    private PopupWindow window;
     private Integer width, height;
     private ContextMenuAdapter contextMenuAdapter;
+    private ListView listView;
 
-    public ContextMenuCreator(Context context, int id) {
+    public ContextMenuCreator(Context context) {
         this.context = context;
+        this.window = new PopupWindow(context);
+        this.listView = new ListView(context);
+    }
 
+    public void menu(int id) {
         List<MenuModel> menuModels = SingletonCache.getInstance().getMenus(id);
         if (menuModels == null) {
             menuModels = createMenusFromResource(id);
             SingletonCache.getInstance().add(id, menuModels);
         }
         this.contextMenuAdapter = new ContextMenuAdapter(context, menuModels);
+
+        listView.setAdapter(contextMenuAdapter);
+        window.setContentView(listView);
     }
 
     public void width(int pixel) {
@@ -68,20 +76,16 @@ public class ContextMenuCreator {
      * @param v the taget view.
      */
     public void anchor(View v) {
-        ListPopupWindow popupWindow = new ListPopupWindow(context);
-        popupWindow.setAdapter(contextMenuAdapter);
-        popupWindow.setWidth(width == null ? DEFAULT_WIDTH : width);
-
-        if (height != null) {
-            popupWindow.setHeight(height);
-        }
-
-        popupWindow.setAnchorView(v);
-        popupWindow.show();
+        window.dismiss();
+        window.setWidth(DEFAULT_WIDTH);
+        window.setHeight(DEFAULT_WIDTH);
+        window.showAsDropDown(v);
+        window.update();
     }
 
     /**
-     * Get the menu datas from xml.
+     * Get menu from cache, if it does not exists recreate a new one and
+     * store it in cache.
      *
      * @param id the menu resource.
      * @return
