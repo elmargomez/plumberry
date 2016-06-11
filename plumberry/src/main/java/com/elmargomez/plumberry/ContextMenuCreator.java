@@ -48,9 +48,16 @@ public class ContextMenuCreator {
     private View view;
     private ListView listView;
 
+    private int offset;
+    private int cellHeight;
+
     public ContextMenuCreator(Context context) {
         this.context = context;
         this.window = new PopupWindow(context);
+
+        // Get the resource value
+        offset = (int) context.getResources().getDimension(R.dimen.listview_offset);
+        cellHeight = (int) context.getResources().getDimension(R.dimen.item_height);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         view = inflater.inflate(R.layout.popup_dialog, null);
@@ -74,7 +81,6 @@ public class ContextMenuCreator {
 
         listView.setAdapter(contextMenuAdapter);
         window.setContentView(view);
-
     }
 
     /**
@@ -103,8 +109,18 @@ public class ContextMenuCreator {
      * @param v the target view.
      */
     public void anchor(View v) {
-        window.setWidth(DEFAULT_WIDTH);
-        window.setHeight(DEFAULT_WIDTH);
+        if (width != null) {
+            window.setWidth(width);
+        } else {
+            window.setWidth(DEFAULT_WIDTH);
+        }
+
+        if (height != null) {
+            window.setHeight(height);
+        } else {
+            window.setHeight(dynamicListHeight());
+        }
+
         window.setOutsideTouchable(true);
         window.showAsDropDown(v);
     }
@@ -140,6 +156,15 @@ public class ContextMenuCreator {
             xml.close();
         }
         return menuModels;
+    }
+
+    private int dynamicListHeight() {
+        int c = contextMenuAdapter.getCount();
+        if (c < 4) {
+            return (offset * 2) + (cellHeight * c);
+        } else {
+            return (offset * 2) + (cellHeight * 4);
+        }
     }
 
 }
