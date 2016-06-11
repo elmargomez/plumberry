@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/listview_offset"
-        android:layout_marginTop="@dimen/listview_offset" />
+        android:layout_marginTop="@dimen/listview_offset"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
 
 </LinearLayout>
