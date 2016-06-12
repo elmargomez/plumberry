@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
@@ -45,11 +46,12 @@ public class ContextMenuCreator {
     private PopupWindow window;
     private Integer width, height;
     private ContextMenuAdapter contextMenuAdapter;
-    private View view;
+    private View view, anchorView;
     private ListView listView;
 
     private int offset;
     private int cellHeight;
+    private PlumBerry.OnItemClickListener listener;
 
     public ContextMenuCreator(Context context) {
         this.context = context;
@@ -109,6 +111,17 @@ public class ContextMenuCreator {
      * @param v the target view.
      */
     public void anchor(View v) {
+        this.anchorView = v;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (listener != null) {
+                    MenuModel menuModel = (MenuModel) parent.getItemAtPosition(position);
+                    listener.onClick(ContextMenuCreator.this, getAnchorView(), menuModel.getTitle());
+                }
+            }
+        });
+
         if (width != null) {
             window.setWidth(width);
         } else {
@@ -123,6 +136,26 @@ public class ContextMenuCreator {
 
         window.setOutsideTouchable(true);
         window.showAsDropDown(v);
+    }
+
+    public void dismiss() {
+        window.dismiss();
+    }
+
+
+    /**
+     * Return the anchored view.
+     *
+     * @return
+     */
+    public View getAnchorView() {
+        return anchorView;
+    }
+
+
+    public ContextMenuCreator listener(PlumBerry.OnItemClickListener listener) {
+        this.listener = listener;
+        return this;
     }
 
     /**

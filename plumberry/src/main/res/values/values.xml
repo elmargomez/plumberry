@@ -6,4 +6,6 @@
     <dimen name="listview_offset">8dp</dimen>
 
     <dimen name="font_size">16sp</dimen>
+
+    <color name="selected_item_color">#EDEDED</color>
 </resources>

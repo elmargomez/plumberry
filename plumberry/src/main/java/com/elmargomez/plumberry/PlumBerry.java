@@ -18,6 +18,7 @@ package com.elmargomez.plumberry;
 
 import android.content.Context;
 import android.support.annotation.MenuRes;
+import android.view.View;
 
 public class PlumBerry {
 
@@ -40,5 +41,18 @@ public class PlumBerry {
     public ContextMenuCreator menu(@MenuRes int id) {
         contextMenuCreator.menu(id);
         return contextMenuCreator;
+    }
+
+    public interface OnItemClickListener {
+
+        /**
+         * Invoked when an item is selected in the listview.
+         *
+         * @param menuCreator the dialog.
+         * @param itemName    the title of the selected item.
+         * @param anchorView  the view where this dialog in anchored.
+         */
+        public void onClick(ContextMenuCreator menuCreator, View anchorView, String itemName);
+
     }
 }
