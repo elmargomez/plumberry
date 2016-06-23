@@ -34,11 +34,11 @@ public class SingletonCache {
         // Do nothing
     }
 
-    public List<MenuModel> getMenus(int d) {
+    public synchronized List<MenuModel> getMenus(int d) {
         return arrayMenuCache.get(d);
     }
 
-    public void add(int id, List<MenuModel> menuModels) {
+    public synchronized void add(int id, List<MenuModel> menuModels) {
         arrayMenuCache.add(id, menuModels);
     }
 }

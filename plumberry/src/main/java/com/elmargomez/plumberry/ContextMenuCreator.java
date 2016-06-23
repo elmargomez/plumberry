@@ -16,6 +16,7 @@
 
 package com.elmargomez.plumberry;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
@@ -136,6 +137,7 @@ public class ContextMenuCreator {
 
         window.setOutsideTouchable(true);
         window.showAsDropDown(v);
+        window.update();
     }
 
     public void dismiss() {
