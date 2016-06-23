@@ -13,6 +13,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="bottom"
         android:paddingLeft="@dimen/item_padding_left"
+        android:paddingRight="@dimen/item_padding_right"
         android:singleLine="true"
         android:text="Sample Menu"
         android:textSize="@dimen/font_size" />

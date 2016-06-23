@@ -16,7 +16,6 @@
 
 package com.elmargomez.plumberry;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
