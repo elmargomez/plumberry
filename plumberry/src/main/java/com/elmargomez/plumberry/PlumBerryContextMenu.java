@@ -19,8 +19,12 @@ package com.elmargomez.plumberry;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Point;
+import android.os.Build;
 import android.support.annotation.MenuRes;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -44,6 +48,7 @@ public class PlumBerryContextMenu extends Dialog {
     private float mWidthUnit;
     private float mWindowMargin;
 
+    private final Point mRealSize = new Point();
     private Context mContext;
     private ListView mListview;
     private List<MenuModel> mMenuModels;
@@ -66,6 +71,14 @@ public class PlumBerryContextMenu extends Dialog {
         mMenuModels = new ArrayList<>();
         mAdapter = new ContextMenuAdapter(context, mMenuModels);
         mListview.setAdapter(mAdapter);
+
+        Display display = getWindow().getWindowManager().getDefaultDisplay();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(mRealSize);
+        } else {
+            mRealSize.x = display.getWidth();
+            mRealSize.y = display.getHeight();
+        }
     }
 
     public PlumBerryContextMenu setMenu(@MenuRes int menu) {
@@ -76,7 +89,35 @@ public class PlumBerryContextMenu extends Dialog {
     }
 
     public void anchor(View view) {
+        mAnchoredView = view;
+        ViewGroup.LayoutParams layoutParams = mListview.getLayoutParams();
+        layoutParams.width = (int) mWidthUnit * 2;
+        final int[] viewLocationInScreen = new int[2];
+        getLocationOnScreenCompat(view, viewLocationInScreen);
+
+        Window window = getWindow();
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.x = viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width/2);
+        attributes.y = viewLocationInScreen[1];
+        window.setAttributes(attributes);
         show();
+    }
+
+    private boolean hasMoreSpaceOnTopOfAnchorView(int[] coordinates) {
+        return (mRealSize.y - coordinates[1]) < (mRealSize.y / 2);
+    }
+
+    private boolean hasMoreSpaceOnLeftSideOfAnchorView(int[] coordinates) {
+        return (mRealSize.x - coordinates[0]) < (mRealSize.x / 2);
+    }
+
+    private void getLocationOnScreenCompat(View view, int[] coordinates) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            coordinates[0] = (int) view.getX();
+            coordinates[1] = (int) view.getY();
+        } else {
+            view.getLocationOnScreen(coordinates);
+        }
     }
 
     /**
