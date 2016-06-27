@@ -4,7 +4,6 @@
     <!--Each unit is 56dp wide.-->
     <!--Minimum width on mobile = 2 * 56dp = 112dp-->
     <dimen name="width_unit">56dp</dimen>
-    <dimen name="window_margin">16dp</dimen>
 
     <dimen name="item_height">48dp</dimen>
     <dimen name="item_padding_bottom">20dp</dimen>

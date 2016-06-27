@@ -32,24 +32,9 @@ public class TestContextMenu {
     private static final String TITLE = "title";
     private static final String ICON = "icon";
 
-    /**
-     * The quadrant in which our dialog located. The position of
-     * anchored view is assumed to be the origin (0,0).
-     */
-    private static final int QUADRANT_I = 1;
-    private static final int QUADRANT_II = 2;
-    private static final int QUADRANT_III = 3;
-    private static final int QUADRANT_IV = 4;
-
-    @IntDef({QUADRANT_I, QUADRANT_II, QUADRANT_III, QUADRANT_IV})
-    @interface CartesianQuadrant {
-
-    }
-
     private int mOffset;
     private int mCellHeight;
     private float mWidthUnit;
-    private float mWindowMargin;
 
     private final WindowManager.LayoutParams mLayoutParams = new WindowManager
             .LayoutParams(400, 400, 10, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
@@ -68,7 +53,6 @@ public class TestContextMenu {
     public TestContextMenu(Context context, int menu) {
         // values
         mWidthUnit = context.getResources().getDimension(R.dimen.width_unit);
-        mWindowMargin = context.getResources().getDimension(R.dimen.window_margin);
         mOffset = (int) context.getResources().getDimension(R.dimen.listview_offset);
         mCellHeight = (int) context.getResources().getDimension(R.dimen.item_height);
 

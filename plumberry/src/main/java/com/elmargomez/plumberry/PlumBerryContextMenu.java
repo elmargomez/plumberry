@@ -29,6 +29,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
 
+import com.elmargomez.plumberry.math.ScreenCoordinate;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -43,10 +45,9 @@ public class PlumBerryContextMenu extends Dialog {
     private static final String TITLE = "title";
     private static final String ICON = "icon";
 
-    private int mOffset;
-    private int mCellHeight;
-    private float mWidthUnit;
-    private float mWindowMargin;
+    private final int mOffset;
+    private final int mCellHeight;
+    private final float mWidthUnit;
 
     private final Point mRealSize = new Point();
     private Context mContext;
@@ -62,7 +63,6 @@ public class PlumBerryContextMenu extends Dialog {
         setContentView(R.layout.popup_dialog);
 
         mWidthUnit = context.getResources().getDimension(R.dimen.width_unit);
-        mWindowMargin = context.getResources().getDimension(R.dimen.window_margin);
         mOffset = (int) context.getResources().getDimension(R.dimen.listview_offset);
         mCellHeight = (int) context.getResources().getDimension(R.dimen.item_height);
 
@@ -88,35 +88,110 @@ public class PlumBerryContextMenu extends Dialog {
         return this;
     }
 
+    /**
+     * Shows and align the dialog in the anchored view coordinates.
+     *
+     * @param view the view in which the Dialog should anchored.
+     */
     public void anchor(View view) {
         mAnchoredView = view;
         ViewGroup.LayoutParams layoutParams = mListview.getLayoutParams();
-        layoutParams.width = (int) mWidthUnit * 2;
         final int[] viewLocationInScreen = new int[2];
         getLocationOnScreenCompat(view, viewLocationInScreen);
 
+        ScreenCoordinate coordinate = new ScreenCoordinate(mRealSize.x, mRealSize.y,
+                viewLocationInScreen[0], viewLocationInScreen[1]);
+
+        /**
+         * Note: the windows coordinate system follows the Cartesian Coordinate system.
+         * Therefore we need to assume that (0,0) is always at the center of the
+         * screen.
+         *
+         * To convert our linear representation value 'L' to Cartesian coordinate value,
+         * we can follow this formula 'C' = (L-zeroCoordinate)
+         */
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
-        attributes.x = viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width/2);
-        attributes.y = viewLocationInScreen[1];
+
+        switch (coordinate.getMostSpace()) {
+            case ScreenCoordinate.BOTTOM_LEFT: {
+                int w = coordinate.leftSpace();
+                int h = coordinate.bottomSpace();
+                layoutParams.width = (int) mWidthUnit * 2;
+                layoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2)) - layoutParams.width;
+                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2));
+                break;
+            }
+            case ScreenCoordinate.BOTTOM_RIGHT: {
+                int w = coordinate.rightSpace();
+                int h = coordinate.bottomSpace();
+                layoutParams.width = (int) mWidthUnit * 2;
+                layoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2));
+                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2));
+                break;
+            }
+            case ScreenCoordinate.TOP_LEFT: {
+                int w = coordinate.leftSpace();
+                int h = coordinate.topSpace();
+                layoutParams.width = (int) mWidthUnit * 2;
+                layoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2)) - layoutParams.width;
+                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2)) - layoutParams.height;
+                break;
+            }
+            case ScreenCoordinate.TOP_RIGHT: {
+                int w = coordinate.rightSpace();
+                int h = coordinate.topSpace();
+                layoutParams.width = (int) mWidthUnit * 2;
+                layoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2));
+                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2)) - layoutParams.height;
+                break;
+            }
+        }
         window.setAttributes(attributes);
         show();
     }
 
-    private boolean hasMoreSpaceOnTopOfAnchorView(int[] coordinates) {
-        return (mRealSize.y - coordinates[1]) < (mRealSize.y / 2);
+    /**
+     * Compute the Max Height of Listview assuming you wanted to see
+     * all the menus whithout having a to have scrollbar.
+     *
+     * @return the max size of the listview
+     */
+    private int getMaxListHeight() {
+        return (mOffset * 2) + (mCellHeight * mMenuModels.size());
     }
 
-    private boolean hasMoreSpaceOnLeftSideOfAnchorView(int[] coordinates) {
-        return (mRealSize.x - coordinates[0]) < (mRealSize.x / 2);
-    }
-
+    /**
+     * The support compat for {@link View#getX()} and {@link View#getY()}.
+     *
+     * @param view
+     * @param coordinates
+     */
     private void getLocationOnScreenCompat(View view, int[] coordinates) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             coordinates[0] = (int) view.getX();
             coordinates[1] = (int) view.getY();
         } else {
             view.getLocationOnScreen(coordinates);
+        }
+    }
+
+    /**
+     * Suggest the proper size that fits to its container.
+     *
+     * @param freeSpace    the container size
+     * @param occupantSize the occupant size
+     * @return the suggest occupant size.
+     */
+    private int preferedSize(int freeSpace, int occupantSize) {
+        if (freeSpace > occupantSize) {
+            return occupantSize;
+        } else {
+            return (int) (freeSpace * 0.7f);
         }
     }
 
