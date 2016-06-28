@@ -49,9 +49,10 @@ public class PlumBerryContextMenu extends Dialog {
     private final int mCellHeight;
     private final float mWidthUnit;
 
-    private final Point mRealSize = new Point();
+    private final Point mDeviceSize = new Point();
     private Context mContext;
     private ListView mListview;
+    private View mViewGroupHolder;
     private List<MenuModel> mMenuModels;
     private ContextMenuAdapter mAdapter;
     private View mAnchoredView;
@@ -67,6 +68,7 @@ public class PlumBerryContextMenu extends Dialog {
         mCellHeight = (int) context.getResources().getDimension(R.dimen.item_height);
 
         mContext = context;
+        mViewGroupHolder = findViewById(R.id.base);
         mListview = (ListView) findViewById(R.id.popup_menu_holder);
         mMenuModels = new ArrayList<>();
         mAdapter = new ContextMenuAdapter(context, mMenuModels);
@@ -74,10 +76,10 @@ public class PlumBerryContextMenu extends Dialog {
 
         Display display = getWindow().getWindowManager().getDefaultDisplay();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            display.getRealSize(mRealSize);
+            display.getRealSize(mDeviceSize);
         } else {
-            mRealSize.x = display.getWidth();
-            mRealSize.y = display.getHeight();
+            mDeviceSize.x = display.getWidth();
+            mDeviceSize.y = display.getHeight();
         }
     }
 
@@ -95,15 +97,15 @@ public class PlumBerryContextMenu extends Dialog {
      */
     public void anchor(View view) {
         mAnchoredView = view;
-        ViewGroup.LayoutParams layoutParams = mListview.getLayoutParams();
+        ViewGroup.LayoutParams listlayoutParams = mViewGroupHolder.getLayoutParams();
         final int[] viewLocationInScreen = new int[2];
-        getLocationOnScreenCompat(view, viewLocationInScreen);
+        view.getLocationOnScreen(viewLocationInScreen);
 
-        ScreenCoordinate coordinate = new ScreenCoordinate(mRealSize.x, mRealSize.y,
+        ScreenCoordinate coordinate = new ScreenCoordinate(mDeviceSize.x, mDeviceSize.y,
                 viewLocationInScreen[0], viewLocationInScreen[1]);
 
         /**
-         * Note: the windows coordinate system follows the Cartesian Coordinate system.
+         * Note: The windows coordinate system follows the similar Cartesian Coordinate system.
          * Therefore we need to assume that (0,0) is always at the center of the
          * screen.
          *
@@ -117,37 +119,37 @@ public class PlumBerryContextMenu extends Dialog {
             case ScreenCoordinate.BOTTOM_LEFT: {
                 int w = coordinate.leftSpace();
                 int h = coordinate.bottomSpace();
-                layoutParams.width = (int) mWidthUnit * 2;
-                layoutParams.height = preferedSize(h, getMaxListHeight());
-                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2)) - layoutParams.width;
-                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2));
+                listlayoutParams.width = (int) mWidthUnit * 2;
+                listlayoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = viewLocationInScreen[0] - (mDeviceSize.x / 2) + (listlayoutParams.width / 2);
+                attributes.y = viewLocationInScreen[1] - (mDeviceSize.y / 2) + (listlayoutParams.height / 2);
                 break;
             }
             case ScreenCoordinate.BOTTOM_RIGHT: {
                 int w = coordinate.rightSpace();
                 int h = coordinate.bottomSpace();
-                layoutParams.width = (int) mWidthUnit * 2;
-                layoutParams.height = preferedSize(h, getMaxListHeight());
-                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2));
-                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2));
+                listlayoutParams.width = (int) mWidthUnit * 2;
+                listlayoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = viewLocationInScreen[0] - (mDeviceSize.x / 2) + (listlayoutParams.width / 2);
+                attributes.y = viewLocationInScreen[1] - (mDeviceSize.y / 2) + (listlayoutParams.height / 2);
                 break;
             }
             case ScreenCoordinate.TOP_LEFT: {
                 int w = coordinate.leftSpace();
                 int h = coordinate.topSpace();
-                layoutParams.width = (int) mWidthUnit * 2;
-                layoutParams.height = preferedSize(h, getMaxListHeight());
-                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2)) - layoutParams.width;
-                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2)) - layoutParams.height;
+                listlayoutParams.width = (int) mWidthUnit * 2;
+                listlayoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = viewLocationInScreen[0] - (mDeviceSize.x / 2) + (listlayoutParams.width / 2);
+                attributes.y = viewLocationInScreen[1] - (mDeviceSize.y / 2) - (listlayoutParams.height / 2) + view.getHeight();
                 break;
             }
             case ScreenCoordinate.TOP_RIGHT: {
                 int w = coordinate.rightSpace();
                 int h = coordinate.topSpace();
-                layoutParams.width = (int) mWidthUnit * 2;
-                layoutParams.height = preferedSize(h, getMaxListHeight());
-                attributes.x = (viewLocationInScreen[0] - (mRealSize.x / 2) + (layoutParams.width / 2));
-                attributes.y = (viewLocationInScreen[1] - (mRealSize.y / 2) + (layoutParams.height / 2)) - layoutParams.height;
+                listlayoutParams.width = (int) mWidthUnit * 2;
+                listlayoutParams.height = preferedSize(h, getMaxListHeight());
+                attributes.x = (viewLocationInScreen[0] - (mDeviceSize.x / 2) + (listlayoutParams.width / 2));
+                attributes.y = viewLocationInScreen[1] - (mDeviceSize.y / 2) - (listlayoutParams.height / 2) + view.getHeight();
                 break;
             }
         }
@@ -163,21 +165,6 @@ public class PlumBerryContextMenu extends Dialog {
      */
     private int getMaxListHeight() {
         return (mOffset * 2) + (mCellHeight * mMenuModels.size());
-    }
-
-    /**
-     * The support compat for {@link View#getX()} and {@link View#getY()}.
-     *
-     * @param view
-     * @param coordinates
-     */
-    private void getLocationOnScreenCompat(View view, int[] coordinates) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            coordinates[0] = (int) view.getX();
-            coordinates[1] = (int) view.getY();
-        } else {
-            view.getLocationOnScreen(coordinates);
-        }
     }
 
     /**
