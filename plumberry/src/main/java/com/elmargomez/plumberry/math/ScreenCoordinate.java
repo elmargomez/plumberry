@@ -40,9 +40,6 @@ public class ScreenCoordinate {
     public int y;
 
     public ScreenCoordinate(int width, int height, int x, int y) {
-        this.width = width;
-        this.height = height;
-
         if (x > width) {
             throw new IllegalArgumentException("X must not be greater than width!");
         }
@@ -51,6 +48,8 @@ public class ScreenCoordinate {
             throw new IllegalArgumentException("Y must not be greater than height!");
         }
 
+        this.width = width;
+        this.height = height;
         this.x = x;
         this.y = y;
     }

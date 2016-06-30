@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.elmargomez.plumberry;
+package com.elmargomez.plumberry.dialog.contextmenu;
 
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MenuViewHolder {
-
     public TextView textView;
     public ImageView icon;
-
 }

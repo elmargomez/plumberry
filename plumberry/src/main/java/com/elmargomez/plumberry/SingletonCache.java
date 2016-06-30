@@ -24,7 +24,7 @@ import java.util.List;
 public class SingletonCache {
 
     private static SingletonCache ourInstance = new SingletonCache();
-    private final ArrayMenuCache arrayMenuCache = new ArrayMenuCache();
+    private final MapMenuCache mapMenuCache = new MapMenuCache();
 
     public static SingletonCache getInstance() {
         return ourInstance;
@@ -35,10 +35,10 @@ public class SingletonCache {
     }
 
     public synchronized List<MenuModel> getMenus(int d) {
-        return arrayMenuCache.get(d);
+        return mapMenuCache.get(d);
     }
 
     public synchronized void add(int id, List<MenuModel> menuModels) {
-        arrayMenuCache.add(id, menuModels);
+        mapMenuCache.add(id, menuModels);
     }
 }

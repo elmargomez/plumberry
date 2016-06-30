@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-package com.elmargomez.plumberry;
+package com.elmargomez.plumberry.dialog.checkbox;
 
-public class PlumBerry {
+import android.app.Dialog;
+import android.content.Context;
+import android.view.Window;
 
+import com.elmargomez.plumberry.R;
+
+public class PlumBerryCheckBox extends Dialog {
+
+    public PlumBerryCheckBox(Context context) {
+        super(context);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.check_dialog);
+    }
 
 }

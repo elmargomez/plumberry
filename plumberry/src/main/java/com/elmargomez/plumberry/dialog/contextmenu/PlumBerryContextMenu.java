@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.elmargomez.plumberry;
+package com.elmargomez.plumberry.dialog.contextmenu;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -27,8 +27,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.elmargomez.plumberry.MenuModel;
+import com.elmargomez.plumberry.R;
+import com.elmargomez.plumberry.SingletonCache;
 import com.elmargomez.plumberry.math.ScreenCoordinate;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -56,6 +60,7 @@ public class PlumBerryContextMenu extends Dialog {
     private List<MenuModel> mMenuModels;
     private ContextMenuAdapter mAdapter;
     private View mAnchoredView;
+    private OnItemClickListener mOnItemClickListener;
 
     public PlumBerryContextMenu(Context context) {
         super(context);
@@ -73,6 +78,18 @@ public class PlumBerryContextMenu extends Dialog {
         mMenuModels = new ArrayList<>();
         mAdapter = new ContextMenuAdapter(context, mMenuModels);
         mListview.setAdapter(mAdapter);
+        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mOnItemClickListener != null) {
+                    MenuModel model = (MenuModel) parent.getItemAtPosition(position);
+                    mOnItemClickListener.onItemClick(PlumBerryContextMenu.this, mAnchoredView,
+                            model.getTitle());
+                }
+            }
+
+        });
 
         Display display = getWindow().getWindowManager().getDefaultDisplay();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -85,8 +102,13 @@ public class PlumBerryContextMenu extends Dialog {
 
     public PlumBerryContextMenu setMenu(@MenuRes int menu) {
         mMenuModels.clear();
-        mMenuModels.addAll(createMenusFromResource(menu));
+        mMenuModels.addAll(getMenuModels(menu));
         mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public PlumBerryContextMenu listener(OnItemClickListener listener) {
+        this.mOnItemClickListener = listener;
         return this;
     }
 
@@ -178,16 +200,31 @@ public class PlumBerryContextMenu extends Dialog {
         if (freeSpace > occupantSize) {
             return occupantSize;
         } else {
-            return (int) (freeSpace * 0.7f);
+            return (int) (freeSpace * 0.8f);
         }
+    }
+
+    /**
+     * We need to cached the menu to avoid re-inflation.
+     *
+     * @param id the menu resource ID
+     * @return returns the array of menus.
+     */
+    private List<MenuModel> getMenuModels(int id) {
+        List<MenuModel> menuModels = SingletonCache.getInstance().getMenus(id);
+        if (menuModels == null) {
+            menuModels = createMenusFromResource(id);
+            SingletonCache.getInstance().add(id, menuModels);
+        }
+        return menuModels;
     }
 
     /**
      * Get menu from cache, if it does not exists recreate a new one and
      * store it in cache.
      *
-     * @param id the menu resource.
-     * @return
+     * @param id the menu resource ID
+     * @return returns the array of menus.
      */
     private List<MenuModel> createMenusFromResource(int id) {
         List<MenuModel> menuModels = new ArrayList<>();
@@ -213,6 +250,15 @@ public class PlumBerryContextMenu extends Dialog {
             xml.close();
         }
         return menuModels;
+    }
+
+    /**
+     * This is called when the user clicks an item in the list.
+     */
+    public interface OnItemClickListener {
+
+        public void onItemClick(Dialog dialog, View anchorView, String title);
+
     }
 
 }

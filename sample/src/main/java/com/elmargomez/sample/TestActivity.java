@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.elmargomez.plumberry.PlumBerryContextMenu;
+import com.elmargomez.plumberry.dialog.contextmenu.PlumBerryContextMenu;
 
 public class TestActivity extends AppCompatActivity {
 
