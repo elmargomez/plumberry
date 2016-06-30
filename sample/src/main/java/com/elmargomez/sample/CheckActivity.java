@@ -19,6 +19,7 @@ public class CheckActivity extends AppCompatActivity {
 
     public void whenChecked(View view) {
         PlumBerryCheckBox checkBox = new PlumBerryCheckBox(this);
+        checkBox.setMenu(R.menu.context_menu);
         checkBox.show();
     }
 

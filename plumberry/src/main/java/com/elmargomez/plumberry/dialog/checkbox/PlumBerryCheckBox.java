@@ -18,16 +18,38 @@ package com.elmargomez.plumberry.dialog.checkbox;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.MenuRes;
 import android.view.Window;
+import android.widget.ListView;
 
+import com.elmargomez.plumberry.MenuModel;
 import com.elmargomez.plumberry.R;
+import com.elmargomez.plumberry.util.MenuUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlumBerryCheckBox extends Dialog {
+
+    private List<MenuModel> mMenuArray;
+    private CheckBoxAdapter mAdapter;
+    private ListView mListView;
 
     public PlumBerryCheckBox(Context context) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.check_dialog);
+        mListView = (ListView) findViewById(R.id.list);
+        mMenuArray = new ArrayList<>();
+        mAdapter = new CheckBoxAdapter(context, mMenuArray);
+        mListView.setAdapter(mAdapter);
+    }
+
+    public PlumBerryCheckBox setMenu(@MenuRes int menu) {
+        mMenuArray.clear();
+        mMenuArray.addAll(MenuUtil.getMenuModels(getContext(), menu));
+        mAdapter.notifyDataSetChanged();
+        return this;
     }
 
 }

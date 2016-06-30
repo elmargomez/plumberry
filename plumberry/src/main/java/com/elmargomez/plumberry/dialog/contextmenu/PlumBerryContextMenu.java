@@ -18,7 +18,6 @@ package com.elmargomez.plumberry.dialog.contextmenu;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.MenuRes;
@@ -32,22 +31,13 @@ import android.widget.ListView;
 
 import com.elmargomez.plumberry.MenuModel;
 import com.elmargomez.plumberry.R;
-import com.elmargomez.plumberry.SingletonCache;
 import com.elmargomez.plumberry.math.ScreenCoordinate;
+import com.elmargomez.plumberry.util.MenuUtil;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlumBerryContextMenu extends Dialog {
-
-    private static final String ITEM = "item";
-    private static final String NAMESPACE = "http://schemas.android.com/apk/res/android";
-    private static final String TITLE = "title";
-    private static final String ICON = "icon";
 
     private final int mOffset;
     private final int mCellHeight;
@@ -102,7 +92,7 @@ public class PlumBerryContextMenu extends Dialog {
 
     public PlumBerryContextMenu setMenu(@MenuRes int menu) {
         mMenuModels.clear();
-        mMenuModels.addAll(getMenuModels(menu));
+        mMenuModels.addAll(MenuUtil.getMenuModels(getContext(), menu));
         mAdapter.notifyDataSetChanged();
         return this;
     }
@@ -202,54 +192,6 @@ public class PlumBerryContextMenu extends Dialog {
         } else {
             return (int) (freeSpace * 0.8f);
         }
-    }
-
-    /**
-     * We need to cached the menu to avoid re-inflation.
-     *
-     * @param id the menu resource ID
-     * @return returns the array of menus.
-     */
-    private List<MenuModel> getMenuModels(int id) {
-        List<MenuModel> menuModels = SingletonCache.getInstance().getMenus(id);
-        if (menuModels == null) {
-            menuModels = createMenusFromResource(id);
-            SingletonCache.getInstance().add(id, menuModels);
-        }
-        return menuModels;
-    }
-
-    /**
-     * Get menu from cache, if it does not exists recreate a new one and
-     * store it in cache.
-     *
-     * @param id the menu resource ID
-     * @return returns the array of menus.
-     */
-    private List<MenuModel> createMenusFromResource(int id) {
-        List<MenuModel> menuModels = new ArrayList<>();
-        XmlResourceParser xml = mContext.getResources().getXml(id);
-        try {
-            int event = xml.getEventType();
-            while (event != XmlPullParser.END_DOCUMENT) {
-                if (event == XmlPullParser.START_TAG) {
-                    if (xml.getName().equals(ITEM)) {
-                        MenuModel menuModel = new MenuModel();
-                        menuModel.setTitle(xml.getAttributeValue(NAMESPACE, TITLE));
-                        menuModel.setIcon(xml.getAttributeIntValue(NAMESPACE, ICON, -1));
-                        menuModels.add(menuModel);
-                    }
-                }
-                event = xml.next();
-            }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            xml.close();
-        }
-        return menuModels;
     }
 
     /**

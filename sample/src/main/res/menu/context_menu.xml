@@ -2,5 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="home" />
     <item android:title="message" />
-    <item android:title="download" />
 </menu>
