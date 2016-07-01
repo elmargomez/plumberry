@@ -27,6 +27,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.elmargomez.plumberry.MenuModel;
 import com.elmargomez.plumberry.R;
@@ -44,6 +45,7 @@ public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
     private int mItemHeight;
     private float mItemFontSize;
     private int mTextColor;
+    private TextView mTitle;
     private RadioGroup mRadioGroup;
     private Button mNegativeButton;
     private Button mPositiveButton;
@@ -59,6 +61,7 @@ public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
         mItemHeight = (int) context.getResources().getDimension(R.dimen.item_height);
         mItemFontSize = context.getResources().getDimension(R.dimen.font_size);
         mTextColor = colorCompat(context, R.color.text_color);
+        mTitle = (TextView) findViewById(R.id.title);
         mRadioGroup = (RadioGroup) findViewById(R.id.list);
         mNegativeButton = (Button) findViewById(R.id.negative_button);
         mPositiveButton = (Button) findViewById(R.id.positive_button);
@@ -92,6 +95,11 @@ public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
             radioButton.setTextColor(mTextColor);
             mRadioGroup.addView(radioButton, layoutParams);
         }
+        return this;
+    }
+
+    public PlumBerryCheckBox setTitle(String title) {
+        mTitle.setText(title);
         return this;
     }
 
