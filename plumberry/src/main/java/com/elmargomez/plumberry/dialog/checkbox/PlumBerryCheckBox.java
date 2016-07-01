@@ -19,36 +19,52 @@ package com.elmargomez.plumberry.dialog.checkbox;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.MenuRes;
+import android.util.TypedValue;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.elmargomez.plumberry.MenuModel;
 import com.elmargomez.plumberry.R;
 import com.elmargomez.plumberry.util.MenuUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlumBerryCheckBox extends Dialog {
 
-    private List<MenuModel> mMenuArray;
-    private CheckBoxAdapter mAdapter;
-    private ListView mListView;
+    private int mLeftMargin;
+    private int mLeftPadding;
+    private int mItemHeight;
+    private float mItemFontSize;
+    private RadioGroup mRadioGroup;
 
     public PlumBerryCheckBox(Context context) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.check_dialog);
-        mListView = (ListView) findViewById(R.id.list);
-        mMenuArray = new ArrayList<>();
-        mAdapter = new CheckBoxAdapter(context, mMenuArray);
-        mListView.setAdapter(mAdapter);
+        mLeftMargin = (int) context.getResources().getDimension(R.dimen.check_menu_item_left_margin);
+        mLeftPadding = (int) context.getResources().getDimension(R.dimen.check_menu_item_padding);
+        mItemHeight = (int) context.getResources().getDimension(R.dimen.item_height);
+        mItemFontSize = context.getResources().getDimension(R.dimen.font_size);
+        mRadioGroup = (RadioGroup) findViewById(R.id.list);
     }
 
     public PlumBerryCheckBox setMenu(@MenuRes int menu) {
-        mMenuArray.clear();
-        mMenuArray.addAll(MenuUtil.getMenuModels(getContext(), menu));
-        mAdapter.notifyDataSetChanged();
+        mRadioGroup.removeAllViews();
+        List<MenuModel> m = MenuUtil.getMenuModels(getContext(), menu);
+        for (MenuModel model : m) {
+
+            RadioGroup.LayoutParams layoutParams = new RadioGroup
+                    .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
+
+            layoutParams.leftMargin = mLeftMargin;
+            RadioButton radioButton = new RadioButton(getContext());
+            radioButton.setPadding(mLeftPadding, 0, 0, 0);
+            radioButton.setText(model.getTitle());
+            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,mItemFontSize);
+            mRadioGroup.addView(radioButton, layoutParams);
+        }
         return this;
     }
 

@@ -5,13 +5,19 @@
     <!--Minimum width on mobile = 2 * 56dp = 112dp-->
     <dimen name="width_unit">56dp</dimen>
 
+    <!--General usage-->
     <dimen name="item_height">48dp</dimen>
+    <dimen name="font_size">16sp</dimen>
+
+    <!--Measurements for Context Menu-->
     <dimen name="item_padding_bottom">20dp</dimen>
     <dimen name="item_padding_left">16dp</dimen>
     <dimen name="item_padding_right">16dp</dimen>
     <dimen name="listview_offset">8dp</dimen>
 
-    <dimen name="font_size">16sp</dimen>
+    <!--Check Menu dimens-->
+    <dimen name="check_menu_item_left_margin">24dp</dimen>
+    <dimen name="check_menu_item_padding">24dp</dimen>
 
     <color name="selected_item_color">#EDEDED</color>
 </resources>
