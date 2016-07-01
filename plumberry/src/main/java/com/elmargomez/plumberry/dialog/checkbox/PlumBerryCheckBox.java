@@ -21,8 +21,10 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.MenuRes;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -32,7 +34,10 @@ import com.elmargomez.plumberry.util.MenuUtil;
 
 import java.util.List;
 
-public class PlumBerryCheckBox extends Dialog {
+public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
+
+    public static final int POSITIVE_BUTTON = 1;
+    public static final int NEGATIVE_BUTTON = 2;
 
     private int mLeftMargin;
     private int mLeftPadding;
@@ -40,6 +45,10 @@ public class PlumBerryCheckBox extends Dialog {
     private float mItemFontSize;
     private int mTextColor;
     private RadioGroup mRadioGroup;
+    private Button mNegativeButton;
+    private Button mPositiveButton;
+    private PlumBerryCheckBox.OnClickListener mOnNegativeClickListener;
+    private PlumBerryCheckBox.OnClickListener mOnPositiveClickListener;
 
     public PlumBerryCheckBox(Context context) {
         super(context);
@@ -51,6 +60,20 @@ public class PlumBerryCheckBox extends Dialog {
         mItemFontSize = context.getResources().getDimension(R.dimen.font_size);
         mTextColor = colorCompat(context, R.color.text_color);
         mRadioGroup = (RadioGroup) findViewById(R.id.list);
+        mNegativeButton = (Button) findViewById(R.id.negative_button);
+        mPositiveButton = (Button) findViewById(R.id.positive_button);
+
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                mPositiveButton.setEnabled(true);
+            }
+
+        });
+
+        mNegativeButton.setOnClickListener(this);
+        mPositiveButton.setOnClickListener(this);
     }
 
     public PlumBerryCheckBox setMenu(@MenuRes int menu) {
@@ -72,6 +95,20 @@ public class PlumBerryCheckBox extends Dialog {
         return this;
     }
 
+    public PlumBerryCheckBox setOnNegativeClickListener(String name, OnClickListener listener) {
+        mNegativeButton.setVisibility(View.VISIBLE);
+        mNegativeButton.setText(name);
+        this.mOnNegativeClickListener = listener;
+        return this;
+    }
+
+    public PlumBerryCheckBox setOnPositiveClickListener(String name, OnClickListener listener) {
+        mPositiveButton.setVisibility(View.VISIBLE);
+        mPositiveButton.setText(name);
+        this.mOnPositiveClickListener = listener;
+        return this;
+    }
+
     /**
      * Get the color from the resource. It is also backward compatible.
      *
@@ -87,4 +124,22 @@ public class PlumBerryCheckBox extends Dialog {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (mOnNegativeClickListener != null && id == R.id.negative_button) {
+            mOnNegativeClickListener.onClick(this, NEGATIVE_BUTTON);
+        } else if (mOnPositiveClickListener != null && id == R.id.positive_button) {
+            mOnPositiveClickListener.onClick(this, POSITIVE_BUTTON);
+        }
+    }
+
+    /**
+     * The listener for our dialog buttons.
+     */
+    public interface OnClickListener {
+
+        public void onClick(PlumBerryCheckBox dialog, int type);
+
+    }
 }
