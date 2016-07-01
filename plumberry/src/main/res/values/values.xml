@@ -20,4 +20,8 @@
     <dimen name="check_menu_item_padding">24dp</dimen>
 
     <color name="selected_item_color">#EDEDED</color>
+
+    <!--Text Color when disabled-->
+    <color name="disable_button_color">#9C9C9C</color>
+    <color name="text_color">#757575</color>
 </resources>

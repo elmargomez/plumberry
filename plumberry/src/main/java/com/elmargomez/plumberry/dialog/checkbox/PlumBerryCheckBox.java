@@ -18,6 +18,7 @@ package com.elmargomez.plumberry.dialog.checkbox;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.MenuRes;
 import android.util.TypedValue;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class PlumBerryCheckBox extends Dialog {
     private int mLeftPadding;
     private int mItemHeight;
     private float mItemFontSize;
+    private int mTextColor;
     private RadioGroup mRadioGroup;
 
     public PlumBerryCheckBox(Context context) {
@@ -47,6 +49,7 @@ public class PlumBerryCheckBox extends Dialog {
         mLeftPadding = (int) context.getResources().getDimension(R.dimen.check_menu_item_padding);
         mItemHeight = (int) context.getResources().getDimension(R.dimen.item_height);
         mItemFontSize = context.getResources().getDimension(R.dimen.font_size);
+        mTextColor = colorCompat(context, R.color.text_color);
         mRadioGroup = (RadioGroup) findViewById(R.id.list);
     }
 
@@ -62,10 +65,26 @@ public class PlumBerryCheckBox extends Dialog {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setPadding(mLeftPadding, 0, 0, 0);
             radioButton.setText(model.getTitle());
-            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,mItemFontSize);
+            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, mItemFontSize);
+            radioButton.setTextColor(mTextColor);
             mRadioGroup.addView(radioButton, layoutParams);
         }
         return this;
+    }
+
+    /**
+     * Get the color from the resource. It is also backward compatible.
+     *
+     * @param context
+     * @param id
+     * @return
+     */
+    private int colorCompat(Context context, int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.getResources().getColor(id, context.getTheme());
+        } else {
+            return context.getResources().getColor(id);
+        }
     }
 
 }
