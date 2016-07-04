@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.elmargomez.plumberry.MenuModel;
 import com.elmargomez.plumberry.R;
+import com.elmargomez.plumberry.dialog.contextmenu.PlumBerryContextMenu;
 import com.elmargomez.plumberry.util.MenuUtil;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
     public static final int POSITIVE_BUTTON = 1;
     public static final int NEGATIVE_BUTTON = 2;
 
+    private Object mTag;
     private int mLeftMargin;
     private int mLeftPadding;
     private int mItemHeight;
@@ -115,6 +117,19 @@ public class PlumBerryCheckBox extends Dialog implements View.OnClickListener {
         mPositiveButton.setText(name);
         this.mOnPositiveClickListener = listener;
         return this;
+    }
+
+    public RadioGroup getRadioGroup() {
+        return mRadioGroup;
+    }
+
+    public PlumBerryCheckBox setTag(Object o) {
+        mTag = o;
+        return this;
+    }
+
+    public Object getTag(){
+        return mTag;
     }
 
     /**

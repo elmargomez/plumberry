@@ -19,7 +19,20 @@ public class CheckActivity extends AppCompatActivity {
 
     public void whenChecked(View view) {
         PlumBerryCheckBox checkBox = new PlumBerryCheckBox(this);
-        checkBox.setMenu(R.menu.context_menu);
+        checkBox.setMenu(R.menu.gender);
+        checkBox.setTitle("What is your gender?");
+        checkBox.setOnNegativeClickListener("Cancel", new PlumBerryCheckBox.OnClickListener() {
+            @Override
+            public void onClick(PlumBerryCheckBox dialog, int type) {
+                dialog.cancel();
+            }
+        });
+        checkBox.setOnPositiveClickListener("Go", new PlumBerryCheckBox.OnClickListener() {
+            @Override
+            public void onClick(PlumBerryCheckBox dialog, int type) {
+
+            }
+        });
         checkBox.show();
     }
 
